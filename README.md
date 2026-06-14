@@ -20,36 +20,43 @@ Unlike traditional process-per-client servers, this implementation uses a single
 ---
 
 ## Architecture
+```text
+                 +-------------------+
+                 |  Listening Socket |
+                 |     TCP :8080     |
+                 +---------+---------+
+                           |
+                           v
+                 +-------------------+
+                 |    poll() Loop    |
+                 | Monitors All FDs  |
+                 +---------+---------+
+                           |
+        +------------------+------------------+
+        |                  |                  |
+        v                  v                  v
 
-                    ┌─────────────────────┐
-                    │   Listening Socket  │
-                    │      TCP :8080      │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │      poll() Loop    │
-                    │  monitors all FDs   │
-                    └──────────┬──────────┘
-                               │
-         ┌─────────────────────┼─────────────────────┐
-         │                     │                     │
-         ▼                     ▼                     ▼
- ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
- │   Client A   │     │   Client B   │     │   Client C   │
- │ Socket FD=4  │     │ Socket FD=5  │     │ Socket FD=6  │
- └──────┬───────┘     └──────┬───────┘     └──────┬───────┘
-        │                    │                    │
-        └────────────┬───────┴────────────┬───────┘
-                     │                    │
-                     ▼                    ▼
-             ┌───────────────────┐
-             │ Broadcast Engine  │
-             │ Message Routing   │
-             └───────────────────┘
-                     │
-                     ▼
-         Sends message to all connected clients
++---------------+  +---------------+  +---------------+
+|   Client A    |  |   Client B    |  |   Client C    |
+|   Socket FD4  |  |   Socket FD5  |  |   Socket FD6  |
++-------+-------+  +-------+-------+  +-------+-------+
+        \                |                /
+         \               |               /
+          \              |              /
+           +-------------+-------------+
+                         |
+                         v
+
+                +-------------------+
+                | Broadcast Engine  |
+                | Message Routing   |
+                +-------------------+
+
+                         |
+                         v
+
+             Sends to all connected clients
+```
 
 ---
 
