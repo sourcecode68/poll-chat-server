@@ -35,7 +35,6 @@ Unlike traditional process-per-client servers, this implementation uses a single
          ┌─────────────────────┼─────────────────────┐
          │                     │                     │
          ▼                     ▼                     ▼
-
  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
  │   Client A   │     │   Client B   │     │   Client C   │
  │ Socket FD=4  │     │ Socket FD=5  │     │ Socket FD=6  │
