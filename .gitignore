@@ -1,0 +1,13 @@
+# executables
+server
+client
+
+# object files
+*.o
+
+# editor files
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
